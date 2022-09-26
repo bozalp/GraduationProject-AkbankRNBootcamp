@@ -5,13 +5,20 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ChatArea from '../ChatArea/ChatArea';
 import MessagesList from './MessagesList';
 
+import { useSelector } from 'react-redux';
+
 const Stack = createNativeStackNavigator();
 
-const Home = () => {
+const Home = ({ navigation }) => {
+    const theme = useSelector((state) => state.theme.theme);
+
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{
+            headerStyle: { backgroundColor: theme.backgroundColor, },
+            headerTintColor:theme.color
+        }}>
             <Stack.Screen name="MessagesList" component={MessagesList} options={{
-                headerShown: false
+                title: "Chats"
             }} />
             <Stack.Screen name="ChatArea" component={ChatArea} />
         </Stack.Navigator>

@@ -3,31 +3,34 @@ import { useEffect, useState } from 'react';
 
 import ChatArea from '../Pages/ChatArea/ChatArea';
 
+import { useSelector } from 'react-redux';
+
 const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastMessage }) => {
+    const theme = useSelector((state) => state.theme.theme);
 
     function goToChat() {
         navigation.navigate("ChatArea");
     }
 
     return (
-        <View style={[{ backgroundColor: '#dedede' }, styles.container]}>
-            <TouchableOpacity>
-                {
-                    
-                            <Image source={{ uri: profilePicture }} style={styles.profile_picture} />
-                        
-                       // <View style={styles.empty_image} />
-                }
 
-            </TouchableOpacity>
-            <TouchableOpacity style={{ flex: 1 }}>
+        <View style={[{ backgroundColor: theme.lineBackground }, styles.container]}>
+            {
+                profilePicture ?
+                    <TouchableOpacity>
+                        <Image source={{ uri: profilePicture }} style={styles.profile_picture} />
+                    </TouchableOpacity>
+                    :
+                    <View style={styles.empty_image} />
+            }
+            < TouchableOpacity style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={styles.title}>{userName}</Text>
-                    <Text style={styles.last_message}>{messageTime}</Text>
+                    <Text style={[{ color: theme.color }, styles.title]}>{userName}</Text>
+                    <Text style={[{ color: theme.color }, styles.last_message]}>{messageTime}</Text>
                 </View>
-                <Text style={[{ color: '#666' }, styles.last_message]}>{lastMessage}</Text>
-            </TouchableOpacity>
-        </View>
+                <Text style={[{ color: theme.grayText }, styles.last_message]}>{lastMessage}</Text>
+            </TouchableOpacity >
+        </View >
     );
 }
 
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
         width: 64,
         height: 64,
         borderRadius: 10,
-        marginRight: 10
+        marginRight: 10,
     },
 });
 

@@ -14,20 +14,28 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './src/Pages/SplashScreen/SplashScreen';
 import Home from './src/Pages/Home/Home';
 
+import { Provider, useSelector } from 'react-redux';
+import { store } from "./src/Toolkits/store";
+import themeSlice, { setDark, setLight } from './src/Toolkits/themeSlice';
+import lightTheme from './src/Themes/light';
+import darkTheme from './src/Themes/dark';
+
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Home'>
+          <Stack.Screen name="SplashScreen" component={SplashScreen} options={{
             headerShown: false
-          }}/>
-        <Stack.Screen name="Home" component={Home} options={{
-           title:"Chats"
-          }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+          }} />
+          <Stack.Screen name="Home" component={Home} options={{
+            headerShown: false
+          }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
@@ -39,3 +47,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App;
