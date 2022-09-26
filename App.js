@@ -24,7 +24,7 @@ export default function App() {
             headerShown: false
           }}/>
         <Stack.Screen name="Home" component={Home} options={{
-           title:"Best Chat App"
+           title:"Chats"
           }}/>
       </Stack.Navigator>
     </NavigationContainer>
