@@ -11,7 +11,7 @@ const initialState = {
 export const themeSlice = createSlice(
     {
         name: 'Theme',
-        initialState, //ya da initialState:initialState
+        initialState, //or initialState:initialState
         reducers: {
             setDark: (state) => {
                 state.theme = darkTheme

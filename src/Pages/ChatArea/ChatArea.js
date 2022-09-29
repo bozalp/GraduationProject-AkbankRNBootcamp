@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const ChatArea = () => {
+const ChatArea = ({navigation, route}) => {
+    const { id, userName } = route.params;
+    useEffect(()=>{
+        navigation.setOptions(
+            {
+                title: userName,
+            }
+        );
+    },[])
+
     return (
         <View style={styles.container}>
             <Text>ChatArea</Text>

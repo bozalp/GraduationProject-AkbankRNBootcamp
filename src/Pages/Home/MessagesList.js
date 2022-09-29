@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Alert, TouchableOpacity, Image } from 'react-native';
 
 import ContactLines from '../../Components/ContactLines';
 
@@ -10,21 +10,29 @@ import Icons from '@expo/vector-icons/Ionicons';
 const MessagesList = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
     const [showProfileImage, setProfilImage] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState(false);
 
-    function handleViewProfileImage() {
+    function handleViewProfileImage(selectedPicture) {
         setProfilImage((i) => !i);
-        Alert.alert(showProfileImage.toString());
+        setSelectedPhoto(selectedPicture);
+        Alert.alert(selectedPhoto);
+        //Alert.alert(showProfileImage.toString());
     }
 
+    const photos = [
+        "https://i.picsum.photos/id/324/200/200.jpg?hmac=qhw4ORwk8T1r-Rxd2QREZORSVvc6l_R1S6F3Pl9mR_c",
+        "https://i.picsum.photos/id/642/200/200.jpg?hmac=MJkhEaTWaybCn0y7rKfh_irNHvVuqRHmxcpziWABTKw",
+        "https://i.picsum.photos/id/177/200/200.jpg?hmac=785Vry8HsdS9dQ7mFYbwV8bR2tWVtzJWWl9YLp6L0n8"
+    ]
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-            <TouchableOpacity style={[{ backgroundColor: theme.greenColor }, styles.contact_button]}>
+            <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]}>
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />
             </TouchableOpacity>
-            <ContactLines userName="Batu" lastMessage="Nabıyon bea??" profilePicture="https://i.picsum.photos/id/324/200/200.jpg?hmac=qhw4ORwk8T1r-Rxd2QREZORSVvc6l_R1S6F3Pl9mR_c" messageTime="12:00" />
-            <ContactLines userName="Batu" lastMessage="Nabıyon bea??" profilePicture="https://i.picsum.photos/id/642/200/200.jpg?hmac=MJkhEaTWaybCn0y7rKfh_irNHvVuqRHmxcpziWABTKw" messageTime="yesterday" />
-            <ContactLines userName="Batu" lastMessage="Nabıyon bea??" profilePicture="https://i.picsum.photos/id/177/200/200.jpg?hmac=785Vry8HsdS9dQ7mFYbwV8bR2tWVtzJWWl9YLp6L0n8" messageTime="24 Sep" />
-            <ContactLines userName="Batu" lastMessage="Nabıyon bea??" messageTime="22 Sep" />
+            <ContactLines navigation={navigation} userName="Batuhan özalp" lastMessage="Nabıyon bea??" profilePicture={photos[0]} messageTime="12:00" />
+            <ContactLines navigation={navigation} userName="Ali veli" lastMessage="Nabıyon bea??" messageTime="yesterday" />
+            <ContactLines navigation={navigation} userName="Ayşe fatma" lastMessage="Nabıyon bea??" profilePicture={photos[2]} messageTime="24 Sep" />
+            <ContactLines navigation={navigation} userName="Batuhh ö" lastMessage="Nabıyon bea??" profilePicture={photos[1]} messageTime="22 Sep" />
         </View>
     );
 }
@@ -61,6 +69,24 @@ const styles = StyleSheet.create({
         shadowRadius: 2.22,
 
         elevation: 3,
+    },
+    full_screen_container:
+    {
+        width: '100%',
+        height: '100%',
+    },
+    full_screen_image:
+    {
+        position: 'absolute',
+        width: 250,
+        height: 250,
+    },
+    image_bg:
+    {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        marginTop: 50
     }
 });
 

@@ -1,8 +1,9 @@
 export default {
     title:'light',
-    backgroundColor: 'white',
+    backgroundColor: '#f2f2f2',
+    borderColor:'#fff',
     color: 'black',
-    lineBackground:'#dedede',
+    lineBackground:'#f9f9f9',
     grayText:'#666',
-    greenColor:'#b2c18e'
+    purpleColor:'#978cfa'
 }
