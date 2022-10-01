@@ -1,30 +1,41 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ChatArea from '../Pages/ChatArea/ChatArea';
 import MessagesList from '../Pages/Home/MessagesList';
 import ViewImage from '../Pages/ViewImage/ViewImage';
+import Settings from './Settings';
 
 import { useSelector } from 'react-redux';
+
+import Icons from '@expo/vector-icons/MaterialIcons';
 
 const Stack = createNativeStackNavigator();
 
 const Home = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
-
+    function goToSettings() {
+        navigation.navigate("Settings");
+    }
     return (
         <Stack.Navigator screenOptions={{
             headerStyle: { backgroundColor: theme.backgroundColor, },
             headerTintColor: theme.color
         }}>
             <Stack.Screen name="MessagesList" component={MessagesList} options={{
-                title: "Chats"
+                title: "Chats",
+                headerRight: () => (
+                    <TouchableOpacity activeOpacity={0.7} onPress={goToSettings}>
+                        <Icons name="settings" size={24} color={theme.color} />
+                    </TouchableOpacity>
+                )
             }} />
             <Stack.Screen name="ChatArea" component={ChatArea} />
             <Stack.Screen name="ViewImage" component={ViewImage} options={{
                 headerShown: false
             }} />
+            <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>
     );
 }

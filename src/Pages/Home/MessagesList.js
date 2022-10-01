@@ -30,7 +30,7 @@ const MessagesList = ({ navigation }) => {
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />
             </TouchableOpacity>
             <ContactLines navigation={navigation} userName="Batuhan özalp" lastMessage="Nabıyon bea??" profilePicture={photos[0]} messageTime="12:00" />
-            <ContactLines navigation={navigation} userName="Ali veli" lastMessage="Nabıyon bea??" messageTime="yesterday" />
+            <ContactLines navigation={navigation} userName="Doğan Kayış" lastMessage="Nabıyon bea??" messageTime="yesterday" />
             <ContactLines navigation={navigation} userName="Ayşe fatma" lastMessage="Nabıyon bea??" profilePicture={photos[2]} messageTime="24 Sep" />
             <ContactLines navigation={navigation} userName="Batuhh ö" lastMessage="Nabıyon bea??" profilePicture={photos[1]} messageTime="22 Sep" />
         </View>
