@@ -1,5 +1,5 @@
 export default {
-    title:'light',
+    title:'Light',
     backgroundColor: '#f2f2f2',
     borderColor:'#fff',
     color: 'black',

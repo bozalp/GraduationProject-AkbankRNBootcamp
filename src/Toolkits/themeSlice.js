@@ -5,7 +5,7 @@ import darkTheme from '../Themes/dark';
 import lightTheme from '../Themes/light';
 
 const initialState = {
-    theme: darkTheme
+    theme: lightTheme
 }
 
 export const themeSlice = createSlice(
