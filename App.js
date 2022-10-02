@@ -23,14 +23,15 @@ import darkTheme from './src/Themes/dark';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
   return (
     <Provider store={store}>
-    <StatusBar
-          barStyle="light-content"
-          backgroundColor="#978cfa"
-        />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#978cfa"
+      />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='SignUp'>
+        <Stack.Navigator initialRouteName='SignIn'>
           <Stack.Screen name="SplashScreen" component={SplashScreen} options={{
             headerShown: false
           }} />

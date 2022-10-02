@@ -24,6 +24,7 @@ const Home = ({ navigation }) => {
             headerTintColor: theme.color
         }}>
             <Stack.Screen name="MessagesList" component={MessagesList} options={{
+                headerBackVisible: false,
                 title: "Chats",
                 headerRight: () => (
                     <TouchableOpacity activeOpacity={0.7} onPress={goToSettings}>
