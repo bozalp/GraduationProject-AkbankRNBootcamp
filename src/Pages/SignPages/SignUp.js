@@ -43,8 +43,8 @@ const SignUp = ({ navigation }) => {
                 <TextBox title="E-Mail" value={email} onChangeText={setMail} />
                 <TextBox title="Password" value={password} onChangeText={setPassword} secureText={true} />
                 <TextBox title="Password (Again)" value={passwordAgain} onChangeText={setPasswordAgain} secureText={true} />
-                <View style={{paddingBottom: 30,}} />
-                <Buttons title={"Sign up"} onPress={null} />
+                <View style={{ paddingBottom: 30, }} />
+                <Buttons title={"Sign up"} onPress={() => handleSignUp()} />
                 <View style={styles.text} >
                     <Text style={{ color: theme.grayText, paddingRight: 10 }}>
                         Do you have an account?

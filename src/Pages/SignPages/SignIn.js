@@ -28,7 +28,7 @@ const SignIn = ({ navigation }) => {
                 console.log(user.password);
                 //setNewUser(email = user.email, password = user.password);
                 setUserStorage();
-                navigation.navigate("HomeScreens");
+                handleGoHome();
             })
             .catch(error => Alert.alert(error.message));
     }
@@ -52,7 +52,7 @@ const SignIn = ({ navigation }) => {
                 <TextBox title="E-Mail" value={email} onChangeText={setMail} />
                 <TextBox title="Password" value={password} onChangeText={setPassword} secureText={true} />
                 <View style={{paddingBottom: 30,}} />
-                <Buttons title={"Sign in"} onPress={()=>handleGoHome()} />
+                <Buttons title={"Sign in"} onPress={() => handleSignIn()} />
                 <View style={styles.text} >
                     <Text style={{ color: theme.grayText, paddingRight: 10 }}>
                         Don't have an account?

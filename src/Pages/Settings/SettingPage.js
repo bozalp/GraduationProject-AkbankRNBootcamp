@@ -27,6 +27,7 @@ const SettingPage = ({ navigation }) => {
             <SettingButton title={"Theme: " + theme.title} iconName = {theme === lightTheme ?  'brightness-6' : 'bedtime'} onPress={() => changeTheme()} />
             <SettingButton title="Account" iconName='person' onPress={null} />
             <SettingButton title="Help" iconName="help" onPress={null} />
+            <SettingButton title="Log out" iconName="logout" onPress={null} />
         </View>
     );
 }

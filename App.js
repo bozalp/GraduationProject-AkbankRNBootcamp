@@ -31,7 +31,7 @@ const App = () => {
         backgroundColor="#978cfa"
       />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='SignIn'>
+        <Stack.Navigator initialRouteName='SplashScreen'>
           <Stack.Screen name="SplashScreen" component={SplashScreen} options={{
             headerShown: false
           }} />
