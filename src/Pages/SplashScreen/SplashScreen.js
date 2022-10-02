@@ -49,7 +49,7 @@ const SplashScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text>Best Chat App</Text>
+            <Text onPress={goToHomePage}>Best Chat App</Text>
             <Text style={{ paddingLeft: 120, fontSize: 10 }}>
                 by bozalp
             </Text>
