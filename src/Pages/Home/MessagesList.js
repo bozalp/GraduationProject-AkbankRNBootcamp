@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Alert, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, Alert, TouchableOpacity, Image, FlatList } from 'react-native';
 
 import ContactLines from '../../Components/ContactLines';
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 
+import { getAuth, initializeAuth } from "firebase/auth";
 import { useSelector } from 'react-redux';
+import firestore from '@react-native-firebase/firestore';
 
 import Icons from '@expo/vector-icons/Ionicons';
 
@@ -12,12 +16,21 @@ const MessagesList = ({ navigation }) => {
     const [showProfileImage, setProfilImage] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(false);
 
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
     function handleViewProfileImage(selectedPicture) {
         setProfilImage((i) => !i);
         setSelectedPhoto(selectedPicture);
         Alert.alert(selectedPhoto);
         //Alert.alert(showProfileImage.toString());
     }
+
+    useEffect(() => {
+        /* firebase.firestore().collection('chats').onSnapshot((snapShot) => {
+             console.warn(snapShot.docs);
+         })*/
+    }, []);
 
     const photos = [
         "https://i.picsum.photos/id/324/200/200.jpg?hmac=qhw4ORwk8T1r-Rxd2QREZORSVvc6l_R1S6F3Pl9mR_c",
@@ -26,13 +39,17 @@ const MessagesList = ({ navigation }) => {
     ]
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-            <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]}>
-                <Icons name='pencil' size={28} color={theme.backgroundColor} />
-            </TouchableOpacity>
+
+            <Text>
+                Welcome X
+            </Text>
             <ContactLines navigation={navigation} userName="Batuhan özalp" lastMessage="Nabıyon bea??" profilePicture={photos[0]} messageTime="12:00" />
             <ContactLines navigation={navigation} userName="Doğan Kayış" lastMessage="Nabıyon bea??" messageTime="yesterday" />
             <ContactLines navigation={navigation} userName="Ayşe fatma" lastMessage="Nabıyon bea??" profilePicture={photos[2]} messageTime="24 Sep" />
             <ContactLines navigation={navigation} userName="Batuhh ö" lastMessage="Nabıyon bea??" profilePicture={photos[1]} messageTime="22 Sep" />
+            <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]}>
+                <Icons name='pencil' size={28} color={theme.backgroundColor} />
+            </TouchableOpacity>
         </View>
     );
 }
@@ -56,7 +73,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 64,
         height: 64,
-        borderRadius: 32,
+        borderRadius: 10,
         position: 'absolute',
         bottom: 30,
         right: 20,

@@ -12,7 +12,7 @@ const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastM
     }
     function ShowProfilePicture() {
         //setProfilImage((i) => !i);
-        navigation.navigate("ViewImage", { pictureUrl: profilePicture })
+        navigation.navigate("ViewImage", { userName: userName, pictureUrl: profilePicture })
     }
     return (
 

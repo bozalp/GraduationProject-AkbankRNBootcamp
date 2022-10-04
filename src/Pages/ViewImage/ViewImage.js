@@ -1,7 +1,16 @@
-import { View, Image, StyleSheet } from "react-native";
-
+import { View, Image, StyleSheet, Dimensions, Text } from "react-native";
+import { useEffect } from 'react';
 const ViewImage = ({ route, navigation }) => {
-    const { pictureUrl } = route.params;
+    const { userName, pictureUrl } = route.params;
+
+    useEffect(() => {
+        navigation.setOptions(
+            {
+                title: userName,
+            }
+        );
+    }, []);
+
     return (
         <View style={styles.container} >
             <Image style={styles.profile_picture} source={{ uri: pictureUrl }} />
@@ -17,12 +26,14 @@ const styles = StyleSheet.create(
             backgroundColor: '#000',
             height: '100%',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            paddingBottom: 50
         },
         profile_picture:
         {
-            width: '75%',
-            height: '75%',
+            borderRadius: 10,
+            width: Dimensions.get('window').width / 1.2,
+            height: Dimensions.get('window').width / 1.2,
         },
     }
 );

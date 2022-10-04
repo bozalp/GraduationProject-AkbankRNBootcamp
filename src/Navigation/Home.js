@@ -34,7 +34,8 @@ const Home = ({ navigation }) => {
             }} />
             <Stack.Screen name="ChatArea" component={ChatArea} />
             <Stack.Screen name="ViewImage" component={ViewImage} options={{
-                headerShown: false
+                headerTintColor:'white',
+                headerStyle: { backgroundColor: '#000', },
             }} />
             <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>

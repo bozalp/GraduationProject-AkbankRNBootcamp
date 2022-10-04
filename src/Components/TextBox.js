@@ -11,7 +11,6 @@ const TextBox = ({ title, value, onChangeText, secureText }) => {
                 borderRadius: 5, marginBottom: 10, borderColor: theme.purpleColor, borderWidth: 1, height:50,
                 padding:5
             }}
-
             onChangeText={onChangeText}
             value={value}
             placeholder={title}
