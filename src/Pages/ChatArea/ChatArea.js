@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -8,13 +8,32 @@ import Icons from '@expo/vector-icons/MaterialIcons';
 
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
-    const { id, userName } = route.params;
+    const { id, userName, pictureUrl } = route.params;
     const [message, setMessage] = useState("");
 
     useEffect(() => {
         navigation.setOptions(
             {
-                title: userName,
+                headerLeft: () => (
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity activeOpacity={0.7} style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => navigation.goBack()}>
+                            <Icons name="arrow-back" size={28} color={theme.color} />
+                            {
+                                pictureUrl ?
+                                    <Image style={{ width: 36, height: 36, borderRadius: 10, marginLeft: 5 }} source={{ uri: pictureUrl }} />
+                                    :
+                                    <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
+                                        <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
+                                            {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                        </Text>
+                                    </View>
+                            }
+                        </TouchableOpacity>
+                        <Text style={{ color: theme.color, fontWeight: '700', paddingLeft: 10 }}>
+                            {userName}
+                        </Text>
+                    </View>
+                ),
             }
         );
     }, []);
@@ -24,7 +43,7 @@ const ChatArea = ({ navigation, route }) => {
             <View style={styles.inner}>
                 <Text>sa</Text>
             </View>
-            <View style={[{ backgroundColor: theme.lineBackground }, styles.textbox_area]}>
+            <View style={[{ backgroundColor: theme.lineBackground, borderColor: theme.purpleColor, }, styles.textbox_area]}>
                 <TextInput
                     style={[{ backgroundColor: theme.lineBackground, color: theme.color, borderColor: theme.purpleColor, }, styles.textbox]}
                     onChangeText={setMessage}
@@ -61,6 +80,7 @@ const styles = StyleSheet.create({
     },
     textbox_area:
     {
+        borderTopWidth: 1,
         width: '100%',
         bottom: 0,
         height: 72,
@@ -78,7 +98,27 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+    profile_picture:
+    {
+        width: 24,
+        height: 24,
+        borderRadius: 10,
+        marginRight: 10,
+    },
+    empty_image:
+    {
+        width: 36,
+        height: 36,
+        borderRadius: 10,
+        marginLeft: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    empty_image_text:
+    {
+        color: 'white',
+    },
 });
 
 export default ChatArea;

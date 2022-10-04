@@ -8,7 +8,7 @@ const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastM
     const [showProfileImage, setProfilImage] = useState(false);
 
     function GoToChat() {
-        navigation.navigate("ChatArea", { userName: userName });
+        navigation.navigate("ChatArea", { userName: userName, pictureUrl: profilePicture });
     }
     function ShowProfilePicture() {
         //setProfilImage((i) => !i);

@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
     {
         justifyContent: 'center',
         alignItems: 'center',
-        width: 64,
-        height: 64,
+        width: 52,
+        height: 52,
         borderRadius: 10,
         position: 'absolute',
-        bottom: 30,
+        bottom: 20,
         right: 20,
         shadowColor: "#000",
         shadowOffset: {

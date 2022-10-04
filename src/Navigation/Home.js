@@ -32,7 +32,9 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 )
             }} />
-            <Stack.Screen name="ChatArea" component={ChatArea} />
+            <Stack.Screen name="ChatArea" component={ChatArea} options={{
+                headerTitle: ''
+            }}/>
             <Stack.Screen name="ViewImage" component={ViewImage} options={{
                 headerTintColor:'white',
                 headerStyle: { backgroundColor: '#000', },
