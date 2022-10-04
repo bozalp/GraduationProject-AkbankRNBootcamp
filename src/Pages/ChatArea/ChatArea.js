@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { GiftedChat } from 'react-native-gifted-chat';
 
 import Icons from '@expo/vector-icons/MaterialIcons';
 
+import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, setDoc } from 'firebase/firestore/lite';
+
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
     const { id, userName, pictureUrl } = route.params;
     const [message, setMessage] = useState("");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     useEffect(() => {
+
         navigation.setOptions(
             {
                 headerLeft: () => (

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import Buttons from '../../Components/Buttons';
 import TextBox from '../../Components/TextBox';
@@ -25,6 +25,7 @@ const SignUp = ({ navigation }) => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
+                updateProfile(user, { displayName: username, photoURL: 'https://avatars.githubusercontent.com/u/33182788?v=4' });
                 console.log(user.email);
                 navigation.navigate("SignIn");
             })
@@ -39,7 +40,7 @@ const SignUp = ({ navigation }) => {
             <View style={{ margin: 10, }}>
                 <Text style={[styles.header_text, { color: theme.color }]}>Sign up</Text>
 
-                <TextBox title="Username" value={username} onChangeText={setUsername} />
+                <TextBox title="Name Surname" value={username} onChangeText={setUsername} />
                 <TextBox title="E-Mail" value={email} onChangeText={setMail} />
                 <TextBox title="Password" value={password} onChangeText={setPassword} secureText={true} />
                 <TextBox title="Password (Again)" value={passwordAgain} onChangeText={setPasswordAgain} secureText={true} />

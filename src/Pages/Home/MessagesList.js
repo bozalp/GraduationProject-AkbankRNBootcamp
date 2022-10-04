@@ -4,10 +4,9 @@ import { StyleSheet, Text, View, Alert, TouchableOpacity, Image, FlatList } from
 import ContactLines from '../../Components/ContactLines';
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
-
 import { getAuth, initializeAuth } from "firebase/auth";
+
 import { useSelector } from 'react-redux';
-import firestore from '@react-native-firebase/firestore';
 
 import Icons from '@expo/vector-icons/Ionicons';
 
