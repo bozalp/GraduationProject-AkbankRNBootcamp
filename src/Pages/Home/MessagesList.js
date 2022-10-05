@@ -5,6 +5,7 @@ import ContactLines from '../../Components/ContactLines';
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import { getAuth, initializeAuth } from "firebase/auth";
+import { getFirestore, getDocs, setDoc, QuerySnapshot, collection, addDoc, query, where } from 'firebase/firestore/lite';
 
 import { useSelector } from 'react-redux';
 
@@ -12,20 +13,37 @@ import Icons from '@expo/vector-icons/Ionicons';
 
 const MessagesList = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
-    const [showProfileImage, setProfilImage] = useState(false);
-    const [selectedPhoto, setSelectedPhoto] = useState(false);
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    function handleViewProfileImage(selectedPicture) {
-        setProfilImage((i) => !i);
-        setSelectedPhoto(selectedPicture);
-        Alert.alert(selectedPhoto);
-        //Alert.alert(showProfileImage.toString());
+    function goToAddContact() {
+        navigation.navigate("AddContact");
+    }
+
+    /* const createChat = async () => {
+         const response = await firebase
+             .firestore()
+             .collection("users")
+             .add({
+                 users: ["email", "userEmail"],
+             });
+         return response;
+     };*/
+    const srg = collection(db, "chats");
+    //const srg = query(collection(db, "chats"), where("users", "!=", "batu@xmail.com"));
+    const sorgu = async () => {
+        const querySnapshot = await getDocs(srg);
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+        });
     }
 
     useEffect(() => {
+        sorgu();
+
         /* firebase.firestore().collection('chats').onSnapshot((snapShot) => {
              console.warn(snapShot.docs);
          })*/
@@ -46,7 +64,7 @@ const MessagesList = ({ navigation }) => {
             <ContactLines navigation={navigation} userName="Doğan Kayış" lastMessage="Nabıyon bea??" messageTime="yesterday" />
             <ContactLines navigation={navigation} userName="Ayşe fatma" lastMessage="Nabıyon bea??" profilePicture={photos[2]} messageTime="24 Sep" />
             <ContactLines navigation={navigation} userName="Batuhh ö" lastMessage="Nabıyon bea??" profilePicture={photos[1]} messageTime="22 Sep" />
-            <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]}>
+            <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]} onPress={goToAddContact}>
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />
             </TouchableOpacity>
         </View>

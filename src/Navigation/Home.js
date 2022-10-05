@@ -6,6 +6,7 @@ import ChatArea from '../Pages/ChatArea/ChatArea';
 import MessagesList from '../Pages/Home/MessagesList';
 import ViewImage from '../Pages/ViewImage/ViewImage';
 import Settings from './Settings';
+import AddContact from '../Pages/Home/AddContact';
 
 import { useSelector } from 'react-redux';
 
@@ -34,12 +35,15 @@ const Home = ({ navigation }) => {
             }} />
             <Stack.Screen name="ChatArea" component={ChatArea} options={{
                 headerTitle: ''
-            }}/>
+            }} />
             <Stack.Screen name="ViewImage" component={ViewImage} options={{
-                headerTintColor:'white',
+                headerTintColor: 'white',
                 headerStyle: { backgroundColor: '#000', },
             }} />
             <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="AddContact" component={AddContact} options={{
+                title: "Add Contact"
+            }} />
         </Stack.Navigator>
     );
 }

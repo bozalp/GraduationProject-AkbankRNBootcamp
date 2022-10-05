@@ -8,7 +8,8 @@ import Icons from '@expo/vector-icons/MaterialIcons';
 
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, setDoc } from 'firebase/firestore/lite';
+import firebase from "firebase/app";
+import { getFirestore, collection, getDocs, setDoc, QuerySnapshot } from 'firebase/firestore/lite';
 
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
@@ -18,7 +19,11 @@ const ChatArea = ({ navigation, route }) => {
     const db = getFirestore(app);
 
     useEffect(() => {
-
+        firebase.getFirestore().collection("chats")
+            .onSnapshot((QuerySnapshot) => {
+                Alert.alert(QuerySnapshot.docs);
+            }
+            )
         navigation.setOptions(
             {
                 headerLeft: () => (

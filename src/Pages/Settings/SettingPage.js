@@ -56,7 +56,7 @@ const SettingPage = ({ navigation }) => {
                 setProfilePicture(profile.photoURL);
             });
         }
-    }, [auth]);
+    }, []);
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
