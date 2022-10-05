@@ -25,7 +25,8 @@ const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastM
                     :
                     <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
                         <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                            {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                        
+                            {userName?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
                         </Text>
                     </View>
             }

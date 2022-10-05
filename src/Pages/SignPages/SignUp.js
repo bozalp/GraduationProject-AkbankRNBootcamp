@@ -26,7 +26,7 @@ const SignUp = ({ navigation }) => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 updateProfile(user, { displayName: username, photoURL: 'https://avatars.githubusercontent.com/u/33182788?v=4' });
-                console.log(user.email);
+                //console.log(user.email);
                 navigation.navigate("SignIn");
             })
             .catch(error => Alert.alert(error.message));

@@ -23,9 +23,9 @@ const SignIn = ({ navigation }) => {
             .then((userCredential) => {
                 const user = userCredential.user;
 
-                console.log("giris basarili");
+             /*   console.log("giris basarili");
                 console.log(user.email);
-                console.log(user.password);
+                console.log(user.password);*/
                 //setNewUser(email = user.email, password = user.password);
                 setUserStorage();
                 handleGoHome();

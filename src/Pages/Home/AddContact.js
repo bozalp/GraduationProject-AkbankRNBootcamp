@@ -20,9 +20,10 @@ const AddContact = () => {
 
     const createChat = async () => {
         const docRef = await addDoc(collection(db, "chats"), {
-            senderUser: sender,
+            sender: sender,
             receiver: receiver
         });
+        setReceiver("");
         console.log("Document written with ID: ", docRef.id);
     }
     useEffect(() => {
@@ -38,7 +39,7 @@ const AddContact = () => {
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-            <TextBox title={"Receiver Email"} onPress={null} onChangeText={setReceiver} />
+            <TextBox title={"Receiver Email"} value={receiver} onChangeText={setReceiver} />
             <Buttons title={"Add New Contact"} onPress={createChat} />
         </View>
     )

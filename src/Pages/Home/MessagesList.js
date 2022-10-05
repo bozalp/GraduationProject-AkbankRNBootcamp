@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Alert, TouchableOpacity, Image, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Alert, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
 
 import ContactLines from '../../Components/ContactLines';
 import { initializeApp } from "firebase/app";
@@ -13,7 +13,10 @@ import Icons from '@expo/vector-icons/Ionicons';
 
 const MessagesList = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
-
+    const [sender, setSender] = useState("");
+    const [chatList, setChatList] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+    //const userList = [];
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -31,39 +34,60 @@ const MessagesList = ({ navigation }) => {
              });
          return response;
      };*/
-    const srg = collection(db, "chats");
-    //const srg = query(collection(db, "chats"), where("users", "!=", "batu@xmail.com"));
+    //const srg = collection(db, "chats");
+    //Giris yapan kisi kullanici adi gonderici adinda varsa mesajlari listeliyorum...
+    const srg2 = query(collection(db, "chats"), where("sender", "==", sender));
     const sorgu = async () => {
-        const querySnapshot = await getDocs(srg);
+        const receiverList = [];
+        const querySnapshot = await getDocs(srg2);
         querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            const data = doc.data();
+            //setChatList(x);
+            receiverList.push(data.receiver);
+            
+            //console.log(doc.id, " => ", doc.data());
         });
+        setChatList(receiverList);
+        setLoading(false);
     }
 
     useEffect(() => {
+        const user = auth.currentUser;
+        if (user !== null) {
+            user.providerData.forEach((profile) => {
+                setSender(profile.email);
+            });
+        }
         sorgu();
-
+        setTimeout(() => {
+            // sorgu();
+        }, 1000);
         /* firebase.firestore().collection('chats').onSnapshot((snapShot) => {
              console.warn(snapShot.docs);
          })*/
-    }, []);
+    }, [chatList]);
 
     const photos = [
         "https://i.picsum.photos/id/324/200/200.jpg?hmac=qhw4ORwk8T1r-Rxd2QREZORSVvc6l_R1S6F3Pl9mR_c",
         "https://i.picsum.photos/id/642/200/200.jpg?hmac=MJkhEaTWaybCn0y7rKfh_irNHvVuqRHmxcpziWABTKw",
         "https://i.picsum.photos/id/177/200/200.jpg?hmac=785Vry8HsdS9dQ7mFYbwV8bR2tWVtzJWWl9YLp6L0n8"
     ]
+
+    const renderChatList = ({ item }) => <ContactLines navigation={navigation} userName={item} lastMessage="Nabıyon bea??" messageTime="12:00" />
+
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
 
             <Text>
                 Welcome X
             </Text>
-            <ContactLines navigation={navigation} userName="Batuhan özalp" lastMessage="Nabıyon bea??" profilePicture={photos[0]} messageTime="12:00" />
-            <ContactLines navigation={navigation} userName="Doğan Kayış" lastMessage="Nabıyon bea??" messageTime="yesterday" />
-            <ContactLines navigation={navigation} userName="Ayşe fatma" lastMessage="Nabıyon bea??" profilePicture={photos[2]} messageTime="24 Sep" />
-            <ContactLines navigation={navigation} userName="Batuhh ö" lastMessage="Nabıyon bea??" profilePicture={photos[1]} messageTime="22 Sep" />
+            {
+                isLoading ? <ActivityIndicator size={"large"} />
+                    :
+                    <FlatList
+                        data={chatList}
+                        renderItem={renderChatList} />
+            }
             <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]} onPress={goToAddContact}>
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />
             </TouchableOpacity>
