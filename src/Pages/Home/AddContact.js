@@ -31,7 +31,6 @@ const AddContact = () => {
         if (user !== null) {
             user.providerData.forEach((profile) => {
                 console.log("  Email: " + profile.email);
-
                 setSender(profile.email);
             });
         }

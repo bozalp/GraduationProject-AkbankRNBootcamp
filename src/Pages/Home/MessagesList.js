@@ -8,7 +8,6 @@ import { getAuth, initializeAuth } from "firebase/auth";
 import { getFirestore, getDocs, setDoc, QuerySnapshot, collection, addDoc, query, where } from 'firebase/firestore/lite';
 
 import { useSelector } from 'react-redux';
-
 import Icons from '@expo/vector-icons/Ionicons';
 
 const MessagesList = ({ navigation }) => {
@@ -37,19 +36,31 @@ const MessagesList = ({ navigation }) => {
     //const srg = collection(db, "chats");
     //Giris yapan kisi kullanici adi gonderici adinda varsa mesajlari listeliyorum...
     const srg2 = query(collection(db, "chats"), where("sender", "==", sender));
-    const sorgu = async () => {
+    const getUsers = async () => {
         const receiverList = [];
+        let x = 0;
         const querySnapshot = await getDocs(srg2);
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             //setChatList(x);
             receiverList.push(data);
-
             //console.log(doc.id, " => ", doc.data());
         });
         setChatList(receiverList);
         setLoading(false);
     }
+
+   /* const getUsers = () => {
+        let x=0;
+        const q = query(collection(db, 'chats'), where('sender', '==', sender));
+         getDocs(q).then(res => {
+          const _users = res.docs.map(item => item.data());
+          console.log(_users);
+          setChatList(_users);
+          x++;
+          console.log(x);
+        });
+      };*/
 
     useEffect(() => {
         const user = auth.currentUser;
@@ -58,14 +69,11 @@ const MessagesList = ({ navigation }) => {
                 setSender(profile.email);
             });
         }
-        sorgu();
-        setTimeout(() => {
-            // sorgu();
-        }, 1000);
+        getUsers();
         /* firebase.firestore().collection('chats').onSnapshot((snapShot) => {
              console.warn(snapShot.docs);
          })*/
-    }, [chatList]);
+    }, []);
 
     function GoToChat(user) {
         navigation.navigate("ChatArea", { user });
@@ -96,6 +104,9 @@ const MessagesList = ({ navigation }) => {
             }
             <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]} onPress={goToAddContact}>
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.refresh_button]} onPress={getUsers}>
+                <Icons name='refresh' size={28} color={theme.backgroundColor} />
             </TouchableOpacity>
         </View>
     );
@@ -151,7 +162,27 @@ const styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         marginTop: 50
-    }
+    },
+    refresh_button:
+    {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 52,
+        height: 52,
+        borderRadius: 10,
+        position: 'absolute',
+        bottom: 20,
+        right: 80,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
+    },
 });
 
 export default MessagesList;

@@ -58,7 +58,7 @@ const ChatArea = ({ navigation, route }) => {
                 ),
             }
         );
-    }, [receiverId]);
+    }, []);
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
