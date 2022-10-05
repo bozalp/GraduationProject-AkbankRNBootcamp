@@ -43,8 +43,8 @@ const MessagesList = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             //setChatList(x);
-            receiverList.push(data.receiver);
-            
+            receiverList.push(data);
+
             //console.log(doc.id, " => ", doc.data());
         });
         setChatList(receiverList);
@@ -67,13 +67,19 @@ const MessagesList = ({ navigation }) => {
          })*/
     }, [chatList]);
 
+    function GoToChat(user) {
+        navigation.navigate("ChatArea", { user });
+    }
+
     const photos = [
         "https://i.picsum.photos/id/324/200/200.jpg?hmac=qhw4ORwk8T1r-Rxd2QREZORSVvc6l_R1S6F3Pl9mR_c",
         "https://i.picsum.photos/id/642/200/200.jpg?hmac=MJkhEaTWaybCn0y7rKfh_irNHvVuqRHmxcpziWABTKw",
         "https://i.picsum.photos/id/177/200/200.jpg?hmac=785Vry8HsdS9dQ7mFYbwV8bR2tWVtzJWWl9YLp6L0n8"
     ]
 
-    const renderChatList = ({ item }) => <ContactLines navigation={navigation} userName={item} lastMessage="Nabıyon bea??" messageTime="12:00" />
+    const renderChatList = ({ item }) =>
+        <ContactLines navigation={navigation} userName={item.receiver} lastMessage="Nabıyon bea??" messageTime="12:00"
+            onPress={() => GoToChat(item)} />
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>

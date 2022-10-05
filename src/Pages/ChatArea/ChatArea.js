@@ -6,24 +6,34 @@ import { GiftedChat } from 'react-native-gifted-chat';
 
 import Icons from '@expo/vector-icons/MaterialIcons';
 
+import { initializeApp } from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
-import { initializeApp } from 'firebase/app';
-import firebase from "firebase/app";
-import { getFirestore, collection, getDocs, setDoc, QuerySnapshot } from 'firebase/firestore/lite';
+import { getAuth, initializeAuth } from "firebase/auth";
+import { getFirestore, getDocs, setDoc, documentId, QuerySnapshot, collection, addDoc, query, where } from 'firebase/firestore/lite';
+import { useRoute } from '@react-navigation/native';
 
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
-    const { id, userName, pictureUrl } = route.params;
+    const { user, pictureUrl } = route.params;
     const [message, setMessage] = useState("");
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const [receiverId, setReceiverId] = useState("");
+
+    //
+    const queryForId = query(collection(db, "chats"), where("receiver", "==", user.receiver));
+    const getUserId = async () => {
+        const querySnapshot = await getDocs(queryForId);
+        querySnapshot.forEach((doc) => {
+            setReceiverId(doc.id);
+            // console.log(doc.id, " => ", doc.data());
+        });
+        console.log(receiverId);
+    }
+
 
     useEffect(() => {
-        firebase.getFirestore().collection("chats")
-            .onSnapshot((QuerySnapshot) => {
-                Alert.alert(QuerySnapshot.docs);
-            }
-            )
+        getUserId();
         navigation.setOptions(
             {
                 headerLeft: () => (
@@ -36,24 +46,24 @@ const ChatArea = ({ navigation, route }) => {
                                     :
                                     <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
                                         <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                                            {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                            {user.email?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
                                         </Text>
                                     </View>
                             }
                         </TouchableOpacity>
                         <Text style={{ color: theme.color, fontWeight: '700', paddingLeft: 10 }}>
-                            {userName}
+                            {user.receiver}
                         </Text>
                     </View>
                 ),
             }
         );
-    }, []);
+    }, [receiverId]);
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
             <View style={styles.inner}>
-                <Text>sa</Text>
+                <Text>{receiverId}</Text>
             </View>
             <View style={[{ backgroundColor: theme.lineBackground, borderColor: theme.purpleColor, }, styles.textbox_area]}>
                 <TextInput

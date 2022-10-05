@@ -3,13 +3,10 @@ import { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
-const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastMessage }) => {
+const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastMessage, onPress }) => {
     const theme = useSelector((state) => state.theme.theme);
     const [showProfileImage, setProfilImage] = useState(false);
 
-    function GoToChat() {
-        navigation.navigate("ChatArea", { userName: userName, pictureUrl: profilePicture });
-    }
     function ShowProfilePicture() {
         //setProfilImage((i) => !i);
         navigation.navigate("ViewImage", { userName: userName, pictureUrl: profilePicture })
@@ -25,12 +22,12 @@ const ContactLines = ({ navigation, userName, profilePicture, messageTime, lastM
                     :
                     <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
                         <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                        
+
                             {userName?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
                         </Text>
                     </View>
             }
-            <TouchableOpacity style={{ flex: 1 }} onPress={GoToChat}>
+            <TouchableOpacity style={{ flex: 1 }} onPress={onPress}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={[{ color: theme.color }, styles.title]}>{userName}</Text>
                     <Text style={[{ color: theme.color }, styles.last_message]}>{messageTime}</Text>

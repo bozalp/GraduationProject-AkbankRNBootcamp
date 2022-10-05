@@ -5,13 +5,13 @@
 
 // Your web app's Firebase configuration
 export const firebaseConfig = {
-  apiKey: "AIzaSyAkvj4EfP9TV6l0ZCX3W3BUPMrjb3Szg8A",
-  authDomain: "chatappbootcamp.firebaseapp.com",
-  projectId: "chatappbootcamp",
-  storageBucket: "chatappbootcamp.appspot.com",
-  messagingSenderId: "48163233501",
-  appId: "1:48163233501:web:8529fb602dd3bbae824534",
-  measurementId: "G-DEX38J5SHW"
+  apiKey: "AIzaSyB8PAbdUzjM8Gg4Fd4-dtVpapBIofA7RaI",
+  authDomain: "chatapp-94d82.firebaseapp.com",
+  projectId: "chatapp-94d82",
+  storageBucket: "chatapp-94d82.appspot.com",
+  messagingSenderId: "553164989744",
+  appId: "1:553164989744:web:bcb6fb0815869fe2ded4f5",
+  measurementId: "G-GVMMEMMBW5"
 };
 
 // Initialize Firebase
