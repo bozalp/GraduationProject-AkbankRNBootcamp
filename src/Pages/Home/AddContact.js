@@ -20,6 +20,7 @@ const AddContact = () => {
 
     const createChat = async () => {
         const docRef = await addDoc(collection(db, "chats"), {
+            messages: [],
             sender: sender,
             receiver: receiver
         });

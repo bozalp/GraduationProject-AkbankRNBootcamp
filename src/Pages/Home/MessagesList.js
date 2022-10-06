@@ -35,11 +35,11 @@ const MessagesList = ({ navigation }) => {
      };*/
     //const srg = collection(db, "chats");
     //Giris yapan kisi kullanici adi gonderici adinda varsa mesajlari listeliyorum...
-    const srg2 = query(collection(db, "chats"), where("sender", "==", sender));
+    const queryChats = query(collection(db, "chats"), where("sender", "==", sender));
     const getUsers = async () => {
         const receiverList = [];
         let x = 0;
-        const querySnapshot = await getDocs(srg2);
+        const querySnapshot = await getDocs(queryChats);
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             //setChatList(x);
