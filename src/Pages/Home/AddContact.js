@@ -21,8 +21,11 @@ const AddContact = () => {
     const createChat = async () => {
         const docRef = await addDoc(collection(db, "chats"), {
             messages: [],
-            sender: sender,
-            receiver: receiver
+            users: [
+                sender, receiver
+            ]
+           // sender: sender,
+           // receiver: receiver
         });
         setReceiver("");
         console.log("Document written with ID: ", docRef.id);

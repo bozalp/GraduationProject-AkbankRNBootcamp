@@ -13,7 +13,12 @@ import Icons from '@expo/vector-icons/Ionicons';
 const MessagesList = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
     const [sender, setSender] = useState("");
-    const [chatList, setChatList] = useState([]);
+    const [chatList, setChatList] = useState([{
+        yeniId: "",
+        data: [],
+    }]);
+    //id ve name aynı diziye ata. veri çekerken dizi.name. onpress id yolla
+    const [IdS, setId] = useState([]);
     const [isLoading, setLoading] = useState(true);
     //const userList = [];
     const app = initializeApp(firebaseConfig);
@@ -24,43 +29,55 @@ const MessagesList = ({ navigation }) => {
         navigation.navigate("AddContact");
     }
 
-    /* const createChat = async () => {
-         const response = await firebase
-             .firestore()
-             .collection("users")
-             .add({
-                 users: ["email", "userEmail"],
-             });
-         return response;
-     };*/
     //const srg = collection(db, "chats");
     //Giris yapan kisi kullanici adi gonderici adinda varsa mesajlari listeliyorum...
-    const queryChats = query(collection(db, "chats"), where("sender", "==", sender));
+    const queryChats = query(collection(db, "chats"), where("users", "array-contains", auth.currentUser.email));
+    //const queryChats2 = query(collection(db, "chats"), where("receiver", "==", auth.currentUser.email));
     const getUsers = async () => {
         const receiverList = [];
+        const idList = [];
         let x = 0;
         const querySnapshot = await getDocs(queryChats);
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             //setChatList(x);
             receiverList.push(data);
+            idList.push(doc.id);
             //console.log(doc.id, " => ", doc.data());
         });
         setChatList(receiverList);
+        let idArray = [];
+        for (let i = 0; i < idList.length; i++) {
+            idArray.push({
+                yeniId: idList[i],
+                data: receiverList[i],
+            });
+            //console.log("id-\n", idList[i] + "users - ", receiverList[i]);
+            //console.log(receiverList[i]);
+            //console.log(idList[i]);           
+        }
+        setId(idArray);
+        console.log(IdS);
+        /*[{
+            yeniId: idList[i],
+            data: receiverList[i],
+        }])*/
+        //setId(idList)
+
         setLoading(false);
     }
 
-   /* const getUsers = () => {
-        let x=0;
-        const q = query(collection(db, 'chats'), where('sender', '==', sender));
-         getDocs(q).then(res => {
-          const _users = res.docs.map(item => item.data());
-          console.log(_users);
-          setChatList(_users);
-          x++;
-          console.log(x);
-        });
-      };*/
+    /* const getUsers = () => {
+         let x=0;
+         const q = query(collection(db, 'chats'), where('sender', '==', sender));
+          getDocs(q).then(res => {
+           const _users = res.docs.map(item => item.data());
+           console.log(_users);
+           setChatList(_users);
+           x++;
+           console.log(x);
+         });
+       };*/
 
     useEffect(() => {
         const user = auth.currentUser;
@@ -75,19 +92,18 @@ const MessagesList = ({ navigation }) => {
          })*/
     }, []);
 
-    function GoToChat(user) {
-        navigation.navigate("ChatArea", { user });
+    {/*
+    <ContactLines navigation={navigation} userName={item.users.filter(user => user !== auth.currentUser.email && user === auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
+            onPress={() => GoToChat(item.users.filter(user => user !== auth.currentUser.email))} />*/
     }
-
-    const photos = [
-        "https://i.picsum.photos/id/324/200/200.jpg?hmac=qhw4ORwk8T1r-Rxd2QREZORSVvc6l_R1S6F3Pl9mR_c",
-        "https://i.picsum.photos/id/642/200/200.jpg?hmac=MJkhEaTWaybCn0y7rKfh_irNHvVuqRHmxcpziWABTKw",
-        "https://i.picsum.photos/id/177/200/200.jpg?hmac=785Vry8HsdS9dQ7mFYbwV8bR2tWVtzJWWl9YLp6L0n8"
-    ]
-
     const renderChatList = ({ item }) =>
-        <ContactLines navigation={navigation} userName={item.receiver} lastMessage="Nabıyon bea??" messageTime="12:00"
-            onPress={() => GoToChat(item)} />
+        <ContactLines navigation={navigation} userName={item.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
+            onPress={() => navigation.navigate("ChatArea", {
+                yeniId: item.yeniId,
+                yeniName: item.data.users.filter(user => user !== auth.currentUser.email).toString()
+            })}
+        />
+
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
@@ -96,11 +112,19 @@ const MessagesList = ({ navigation }) => {
                 Welcome X
             </Text>
             {
-                isLoading ? <ActivityIndicator size={"large"} />
-                    :
-                    <FlatList
-                        data={chatList}
-                        renderItem={renderChatList} />
+
+               /* IdS.map((m) =>
+                        <ContactLines navigation={navigation} userName={m.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
+                            onPress={() => navigation.navigate("ChatArea", {
+                                yeniId: m.yeniId,
+                                yeniName: m.data.users.filter(user => user !== auth.currentUser.email).toString()
+                            })}
+                        />
+                )
+                 */
+                      <FlatList
+                            data={IdS}
+                            renderItem={renderChatList} />
             }
             <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]} onPress={goToAddContact}>
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />

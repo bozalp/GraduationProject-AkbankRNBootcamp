@@ -15,7 +15,7 @@ import { useRoute } from '@react-navigation/native';
 
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
-    const { user } = route.params;
+    const { yeniId, yeniName } = route.params;
     const [chatMessage, setChatMessage] = useState("");
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -29,23 +29,26 @@ const ChatArea = ({ navigation, route }) => {
     const [username, setUserName] = useState("");
     const [send, setSend] = useState(false);
 
-    const getUserId = async () => {
+    /*const getUserId = async () => {
+        console.log("yeni id: ",yeniId);
         let _id = "";
-        const queryForId = query(collection(db, "chats"), where("receiver", "==", user.receiver));
+        //const queryForId = query(collection(db, "chats"), where("receiver", "==", user.receiver));
+        const queryForId = query(collection(db, "chats"), where("users", "array-contains", yeniName));
         const querySnapshot = await getDocs(queryForId);
         querySnapshot.forEach((doc) => {
             //setReceiverId(doc.id);
             _id = doc.id;
-            console.log(_id);
-            console.log(typeof (doc.id), " => ", doc.data());
+            //console.log(_id);
+           // console.log(typeof (doc.id), " => ", doc.data());
         });
-        setReceiverId(_id);
-        getUsers(_id);
+        
+        setReceiverId(yeniId);
+        getUsers(yeniId);
         setLoading(false);
-    }
+    }*/
 
     const getUsers = async (_id) => {
-        console.log(_id);
+        //console.log(_id);
         try {
             const docRef = doc(db, "chats", _id);
             const docSnap = await getDoc(docRef);
@@ -85,7 +88,12 @@ const ChatArea = ({ navigation, route }) => {
        }*/
 
     useEffect(() => {
-        getUserId();
+        //getUserId();
+        setReceiverId(yeniId);
+        setTimeout(() => {
+            getUsers(yeniId);
+        }, 500);
+
         navigation.setOptions(
             {
                 headerLeft: () => (
@@ -98,13 +106,13 @@ const ChatArea = ({ navigation, route }) => {
                                     :
                                     <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
                                         <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                                            {user.receiver?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                            {yeniName?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
                                         </Text>
                                     </View>
                             }
                         </TouchableOpacity>
                         <Text style={{ color: theme.color, fontWeight: '700', paddingLeft: 10 }}>
-                            {user.receiver}
+                            {yeniName}
                         </Text>
                     </View>
                 ),
@@ -113,8 +121,7 @@ const ChatArea = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
-        getUsers(receiverId);
-        console.log("d");
+        getUsers(yeniId);
     }, [send])
 
     const onSend = (m) => {
@@ -124,12 +131,12 @@ const ChatArea = ({ navigation, route }) => {
 
         //textbox bos degilse verileri messages kismina array olarak gonderiyorum
         if (chatMessage !== "") {
-            const cityRef = doc(db, 'chats', receiverId);
+            const cityRef = doc(db, 'chats', yeniId);
             let date = new Date();
             let messageTime = date.getHours() + ":" + date.getMinutes();
             setDoc(cityRef,
                 {
-                    messages: arrayUnion({ text: m, date: date, time: messageTime })
+                    messages: arrayUnion({ senderMail: auth.currentUser.email, text: m, date: date, time: messageTime })
                     //messages: [{ text: m }]
                 }
                 , { merge: true });
@@ -143,23 +150,40 @@ const ChatArea = ({ navigation, route }) => {
 
             <View style={styles.inner}>
                 {
-                    isLoading ? <ActivityIndicator size={"large"} />
-                        :
-                        <View>
-                            <Text>{users}</Text>
-                        </View>
-                }
-                <FlatList
-                    data={messages}
-                    renderItem={({ item }) =>
-                        <View style={[{ backgroundColor: theme.purpleColor }, styles.messagebox]}>
-                            <Text style={{ color: theme.color }}>
-                                {item.text}
-                            </Text>
-                        </View>
-                    }
-                />
 
+                    <FlatList
+                        data={messages}
+                        renderItem={({ item }) => {
+                            if (item.senderMail === auth.currentUser.email) {
+                                return (
+                                    <View style={{ alignItems: 'flex-end' }}>
+                                        <View style={[{ borderColor: theme.borderColor, backgroundColor: theme.purpleColor }, styles.messagebox_sender]}>
+                                            <Text style={{ color: theme.backgroundColor, }}>
+                                                {item.text}
+                                            </Text>
+                                            <Text style={[styles.time_text, { color: theme.grayText }]}>
+                                                {item.time}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                )
+                            }
+                            else {
+                                return (
+                                    <View style={[{ borderColor: theme.borderColor, backgroundColor: theme.lineBackground }, styles.messagebox_receiver]}>
+                                        <Text style={{ color: theme.color, }}>
+                                            {item.text}
+                                        </Text>
+                                        <Text style={[styles.time_text, { color: theme.grayText }]}>
+                                            {item.time}
+                                        </Text>
+                                    </View>
+                                )
+                            }
+                        }
+                        }
+                    />
+                }
             </View>
 
 
@@ -191,15 +215,32 @@ const styles = StyleSheet.create({
     inner:
     {
         flex: 1,
-        padding: 10
-    },
-    messagebox:
-    {
-        justifyContent:'flex-end',
-        width: '40%',
+        // flexDirection: 'column-reverse',
         padding: 10,
-        marginBottom: 5,
-        borderRadius: 10
+        marginBottom: 70
+    },
+    messagebox_sender:
+    {
+        width: '60%',
+        padding: 5,
+        marginBottom: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        alignItems: 'flex-end'
+    },
+    messagebox_receiver:
+    {
+        width: '60%',
+        padding: 5,
+        marginBottom: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        alignItems: 'flex-start'
+    },
+    time_text:
+    {
+        fontSize: 12,
+        paddingTop: 10,
     },
     textbox:
     {
