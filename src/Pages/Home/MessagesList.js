@@ -14,13 +14,11 @@ const MessagesList = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
     const [sender, setSender] = useState("");
     const [chatList, setChatList] = useState([{
-        yeniId: "",
+        newId: "",
         data: [],
     }]);
-    //id ve name aynı diziye ata. veri çekerken dizi.name. onpress id yolla
     const [IdS, setId] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    //const userList = [];
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -49,35 +47,16 @@ const MessagesList = ({ navigation }) => {
         let idArray = [];
         for (let i = 0; i < idList.length; i++) {
             idArray.push({
-                yeniId: idList[i],
+                newId: idList[i],
                 data: receiverList[i],
-            });
-            //console.log("id-\n", idList[i] + "users - ", receiverList[i]);
-            //console.log(receiverList[i]);
-            //console.log(idList[i]);           
+            });    
         }
         setId(idArray);
         console.log(IdS);
-        /*[{
-            yeniId: idList[i],
-            data: receiverList[i],
-        }])*/
-        //setId(idList)
+
 
         setLoading(false);
     }
-
-    /* const getUsers = () => {
-         let x=0;
-         const q = query(collection(db, 'chats'), where('sender', '==', sender));
-          getDocs(q).then(res => {
-           const _users = res.docs.map(item => item.data());
-           console.log(_users);
-           setChatList(_users);
-           x++;
-           console.log(x);
-         });
-       };*/
 
     useEffect(() => {
         const user = auth.currentUser;
@@ -87,20 +66,13 @@ const MessagesList = ({ navigation }) => {
             });
         }
         getUsers();
-        /* firebase.firestore().collection('chats').onSnapshot((snapShot) => {
-             console.warn(snapShot.docs);
-         })*/
     }, []);
 
-    {/*
-    <ContactLines navigation={navigation} userName={item.users.filter(user => user !== auth.currentUser.email && user === auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
-            onPress={() => GoToChat(item.users.filter(user => user !== auth.currentUser.email))} />*/
-    }
     const renderChatList = ({ item }) =>
         <ContactLines navigation={navigation} userName={item.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
             onPress={() => navigation.navigate("ChatArea", {
-                yeniId: item.yeniId,
-                yeniName: item.data.users.filter(user => user !== auth.currentUser.email).toString()
+                newId: item.newId,
+                newName: item.data.users.filter(user => user !== auth.currentUser.email).toString()
             })}
         />
 
@@ -122,6 +94,8 @@ const MessagesList = ({ navigation }) => {
                         />
                 )
                  */
+                isLoading ? <ActivityIndicator size={"large"} />
+                :
                       <FlatList
                             data={IdS}
                             renderItem={renderChatList} />

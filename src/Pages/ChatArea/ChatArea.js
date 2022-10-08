@@ -15,7 +15,7 @@ import { useRoute } from '@react-navigation/native';
 
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
-    const { yeniId, yeniName } = route.params;
+    const { newId, newName } = route.params;
     const [chatMessage, setChatMessage] = useState("");
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -48,7 +48,6 @@ const ChatArea = ({ navigation, route }) => {
     }*/
 
     const getUsers = async (_id) => {
-        //console.log(_id);
         try {
             const docRef = doc(db, "chats", _id);
             const docSnap = await getDoc(docRef);
@@ -88,10 +87,9 @@ const ChatArea = ({ navigation, route }) => {
        }*/
 
     useEffect(() => {
-        //getUserId();
-        setReceiverId(yeniId);
+        setReceiverId(newId);
         setTimeout(() => {
-            getUsers(yeniId);
+            getUsers(newId);
         }, 500);
 
         navigation.setOptions(
@@ -106,13 +104,13 @@ const ChatArea = ({ navigation, route }) => {
                                     :
                                     <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
                                         <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                                            {yeniName?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                            {newName?.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
                                         </Text>
                                     </View>
                             }
                         </TouchableOpacity>
                         <Text style={{ color: theme.color, fontWeight: '700', paddingLeft: 10 }}>
-                            {yeniName}
+                            {newName}
                         </Text>
                     </View>
                 ),
@@ -121,7 +119,7 @@ const ChatArea = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
-        getUsers(yeniId);
+        getUsers(newId);
     }, [send])
 
     const onSend = (m) => {
@@ -131,7 +129,7 @@ const ChatArea = ({ navigation, route }) => {
 
         //textbox bos degilse verileri messages kismina array olarak gonderiyorum
         if (chatMessage !== "") {
-            const cityRef = doc(db, 'chats', yeniId);
+            const cityRef = doc(db, 'chats', newId);
             let date = new Date();
             let messageTime = date.getHours() + ":" + date.getMinutes();
             setDoc(cityRef,

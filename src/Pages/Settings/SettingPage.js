@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 
 import SettingButton from '../../Components/SettingButton';
@@ -11,10 +11,13 @@ import darkTheme from '../../Themes/dark';
 import { firebaseConfig } from "../../FirebaseConfig/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import firebase from "firebase/app";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, updateProfile } from "firebase/auth";
+import { getStorage, ref, uploadBytes, storageRef, storage, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from '@expo/vector-icons/MaterialIcons';
+import * as ImagePicker from 'expo-image-picker';
+import uuid from 'react-native-uuid';
 
 const SettingPage = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
@@ -43,54 +46,119 @@ const SettingPage = ({ navigation }) => {
         await AsyncStorage.removeItem('password');
     };
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            quality: 0.5,
+            aspect: [1, 1]
+        });
+        if (!result.cancelled) {
+            const uri = result.uri;
+            setProfilePicture(uri);
+            setTimeout(() => {
+                uploadImage(result.uri);
+            }, 1000);
+        }
+    };
+
+    function updateProfilePicture(downloadUrl) {
+        updateProfile(auth.currentUser, {
+            photoURL: downloadUrl,
+        }).then(() => {
+            console.log("profile updated");
+        }).catch((error) => {
+            console.log(error.toString());
+        });
+    }
+
+
+    const uploadImage = async (picture) => {
+        console.log(picture);
+        const metadata = {
+            contentType: 'image/jpeg'
+        };
+        try {
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    console.log(e);
+                    reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', picture, true);
+                xhr.send(null);
+            });
+            const storage = getStorage();
+            const fileRef = ref(storage, uuid.v4());
+            await uploadBytes(fileRef, blob, metadata)
+            blob.close();
+            // return await getDownloadURL(fileRef);
+            getDownloadURL(fileRef).then((downloadURL) => {
+                console.log('File available at', downloadURL);
+                updateProfilePicture(downloadURL);
+                // setDownloadUrl(downloadURL);
+            });
+        }
+        catch (error) {
+            console.log(error);
+            Alert.alert('Network Error', 'Please check your internet connection!');
+        }
+
+
+    }
     useEffect(() => {
         const user = auth.currentUser;
         if (user !== null) {
             user.providerData.forEach((profile) => {
-                console.log("Sign-in provider: " + profile.providerId);
-                console.log("  Provider-specific UID: " + profile.uid);
-                console.log("  Name: " + profile.displayName);
-                console.log("  Email: " + profile.email);
+                //console.log("Sign-in provider: " + profile.providerId);
+                //console.log("  Provider-specific UID: " + profile.uid);
+                //console.log("  Name: " + profile.displayName);
+                //console.log("  Email: " + profile.email);
                 console.log("  Photo URL: " + profile.photoURL);
                 setUserName(profile.displayName);
                 setMail(profile.email);
                 setProfilePicture(profile.photoURL);
+                
             });
         }
     }, []);
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-            <View style={styles.profile_info_area}>
-                <View>
-                    {
-                        profilePicture ?
-                            <Image style={styles.profile_image} source={{ uri: profilePicture }} />
-                            :
-                            <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
-                                <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                                    {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
-                                </Text>
-                            </View>
+                <View style={styles.profile_info_area}>
+                    <View>
+                        {
+                            profilePicture ?
+                                <Image style={styles.profile_image} source={{ uri: profilePicture }} />
+                                :
+                                <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
+                                    <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
+                                        {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                    </Text>
+                                </View>
 
-                    }
-                    <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.camera_button]} onPress={null} activeOpacity={0.7}>
-                        <Icons name='photo-camera' size={28} color={theme.backgroundColor} />
-                    </TouchableOpacity>
+                        }
+                        <TouchableOpacity style={[{ backgroundColor: theme.purpleColor, borderColor: theme.backgroundColor }, styles.camera_button]} onPress={pickImage} activeOpacity={0.7}>
+                            <Icons name='photo-camera' size={20} color={theme.backgroundColor} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={[styles.user_text, { color: theme.color }]}>
+                        {userName}
+                    </Text>
+                    <Text style={{ color: theme.color }}>
+                        {email}
+                    </Text>
+
                 </View>
-                <Text style={[styles.user_text, { color: theme.color }]}>
-                    {userName}
-                </Text>
-                <Text style={{ color: theme.color }}>
-                    {email}
-                </Text>
-
-            </View>
-
             <SettingButton title={"Theme: " + theme.title} iconName={theme === lightTheme ? 'brightness-6' : 'bedtime'} onPress={() => changeTheme()} />
             <SettingButton title="Account" iconName='person' onPress={null} />
             <SettingButton title="Help" iconName="help" onPress={null} />
             <SettingButton title="Log out" iconName="logout" onPress={() => LogOut()} />
+
         </View>
     );
 }
@@ -115,7 +183,7 @@ const styles = StyleSheet.create(
             height: 128,
             borderRadius: 10,
             marginRight: 10,
-            marginBottom: 10,
+            marginBottom: 15,
         },
         empty_image:
         {
@@ -125,7 +193,7 @@ const styles = StyleSheet.create(
             marginRight: 10,
             justifyContent: 'center',
             alignItems: 'center',
-            marginBottom: 10,
+            marginBottom: 15,
         },
         empty_image_text:
         {
@@ -141,12 +209,13 @@ const styles = StyleSheet.create(
         {
             justifyContent: 'center',
             alignItems: 'center',
-            width: 36,
-            height: 36,
+            width: 40,
+            height: 40,
             borderRadius: 10,
+            borderWidth: 1,
             position: 'absolute',
-            bottom: 0,
-            right: 0,
+            bottom: 5,
+            right: -5,
         }
     }
 );

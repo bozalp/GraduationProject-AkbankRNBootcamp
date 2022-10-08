@@ -21,12 +21,11 @@ const SignUp = ({ navigation }) => {
     const [passwordAgain, setPasswordAgain] = useState(null);
     const [username, setUsername] = useState(null);
 
-    const tempPhoto = "https://i.pravatar.cc/300";
     const handleSignUp = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                updateProfile(user, { displayName: username, photoURL: tempPhoto });
+                updateProfile(user, { displayName: username, photoURL: "" });
                 //console.log(user.email);
                 navigation.navigate("SignIn");
             })
