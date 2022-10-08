@@ -10,7 +10,6 @@ import darkTheme from '../../Themes/dark';
 
 import { firebaseConfig } from "../../FirebaseConfig/firebaseConfig";
 import { initializeApp } from "firebase/app";
-import firebase from "firebase/app";
 import { getAuth, signOut, updateProfile } from "firebase/auth";
 import { getStorage, ref, uploadBytes, storageRef, storage, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
@@ -122,43 +121,50 @@ const SettingPage = ({ navigation }) => {
                 setUserName(profile.displayName);
                 setMail(profile.email);
                 setProfilePicture(profile.photoURL);
-                
+
             });
         }
     }, []);
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-                <View style={styles.profile_info_area}>
-                    <View>
-                        {
-                            profilePicture ?
-                                <Image style={styles.profile_image} source={{ uri: profilePicture }} />
-                                :
-                                <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
-                                    <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                                        {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
-                                    </Text>
-                                </View>
+            <View style={styles.profile_info_area}>
+                <View>
+                    {
+                        profilePicture ?
+                            <Image style={styles.profile_image} source={{ uri: profilePicture }} />
+                            :
+                            <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
+                                <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
+                                    {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                </Text>
+                            </View>
 
-                        }
-                        <TouchableOpacity style={[{ backgroundColor: theme.purpleColor, borderColor: theme.backgroundColor }, styles.camera_button]} onPress={pickImage} activeOpacity={0.7}>
-                            <Icons name='photo-camera' size={20} color={theme.backgroundColor} />
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={[styles.user_text, { color: theme.color }]}>
-                        {userName}
-                    </Text>
-                    <Text style={{ color: theme.color }}>
-                        {email}
-                    </Text>
-
+                    }
+                    <TouchableOpacity style={[{ backgroundColor: theme.purpleColor, borderColor: theme.backgroundColor }, styles.camera_button]} onPress={pickImage} activeOpacity={0.7}>
+                        <Icons name='photo-camera' size={20} color={theme.backgroundColor} />
+                    </TouchableOpacity>
                 </View>
+                <Text style={[styles.user_text, { color: theme.color }]}>
+                    {userName}
+                </Text>
+                <Text style={{ color: theme.color }}>
+                    {email}
+                </Text>
+
+            </View>
             <SettingButton title={"Theme: " + theme.title} iconName={theme === lightTheme ? 'brightness-6' : 'bedtime'} onPress={() => changeTheme()} />
-            <SettingButton title="Account" iconName='person' onPress={null} />
+            <SettingButton title="Account" iconName='person' onPress={() => navigation.navigate("AccountPage")} />
             <SettingButton title="Help" iconName="help" onPress={null} />
             <SettingButton title="Log out" iconName="logout" onPress={() => LogOut()} />
-
+            <View style={styles.footer}>
+                <Text style={{ color: theme.color, }}>
+                    from
+                </Text>
+                <Text style={{ color: theme.color, fontWeight: '700', }}>
+                    Batuhan OZALP - github.com/bozalp
+                </Text>
+            </View>
         </View>
     );
 }
@@ -216,6 +222,14 @@ const styles = StyleSheet.create(
             position: 'absolute',
             bottom: 5,
             right: -5,
+        },
+        footer:
+        {
+            alignContent: 'flex-end',
+            bottom: 0,
+            alignItems: 'center',
+            position: 'absolute',
+            paddingBottom: 20
         }
     }
 );

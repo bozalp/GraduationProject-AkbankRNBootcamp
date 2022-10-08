@@ -40,7 +40,9 @@ const Home = ({ navigation }) => {
                 headerTintColor: 'white',
                 headerStyle: { backgroundColor: '#000', },
             }} />
-            <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Settings" component={Settings} options={{
+                headerShown: false
+            }} />
             <Stack.Screen name="AddContact" component={AddContact} options={{
                 title: "Add Contact"
             }} />

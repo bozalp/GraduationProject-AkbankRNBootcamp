@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 
 import SettingPage from '../Pages/Settings/SettingPage';
+import AccountPage from '../Pages/Settings/AccountPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,10 +17,14 @@ const Home = ({ navigation }) => {
     return (
         <Stack.Navigator screenOptions={{
             headerStyle: { backgroundColor: theme.backgroundColor, },
-            headerTintColor: theme.color
+            headerTintColor: theme.color,
+            
         }}>
             <Stack.Screen name="SettingPage" component={SettingPage} options={{
-                headerShown: false
+                title:"Settings"
+            }}/>
+            <Stack.Screen name="AccountPage" component={AccountPage} options={{
+                title:"Account"
             }}/>
 
         </Stack.Navigator>

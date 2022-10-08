@@ -53,8 +53,6 @@ const MessagesList = ({ navigation }) => {
         }
         setId(idArray);
         console.log(IdS);
-
-
         setLoading(false);
     }
 
@@ -76,10 +74,8 @@ const MessagesList = ({ navigation }) => {
             })}
         />
 
-
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-
             <Text>
                 Welcome X
             </Text>
@@ -119,7 +115,6 @@ const styles = StyleSheet.create({
     {
         flex: 1,
         backgroundColor: 'black',
-        //opacity: 0.7,
         width: '100%',
         height: '100%'
     },
@@ -178,7 +173,6 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.22,
         shadowRadius: 2.22,
-
         elevation: 3,
     },
 });
