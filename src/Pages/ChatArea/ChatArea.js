@@ -10,7 +10,7 @@ import { initializeApp } from "firebase/app";
 import firebase from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import { getAuth, initializeAuth, } from "firebase/auth";
-import { getFirestore, getDocs, setDoc, arrayUnion, documentId, QuerySnapshot, collection, addDoc, query, where, doc, getDoc, set } from 'firebase/firestore/lite';
+import { getFirestore, getDocs, setDoc, arrayUnion, onSnapshot, QuerySnapshot, collection, addDoc, query, where, doc, getDoc, set } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 
 const ChatArea = ({ navigation, route }) => {
@@ -28,64 +28,18 @@ const ChatArea = ({ navigation, route }) => {
     const [pictureUrl, setPicture] = useState("");
     const [username, setUserName] = useState("");
     const [send, setSend] = useState(false);
-
-    /*const getUserId = async () => {
-        console.log("yeni id: ",yeniId);
-        let _id = "";
-        //const queryForId = query(collection(db, "chats"), where("receiver", "==", user.receiver));
-        const queryForId = query(collection(db, "chats"), where("users", "array-contains", yeniName));
-        const querySnapshot = await getDocs(queryForId);
-        querySnapshot.forEach((doc) => {
-            //setReceiverId(doc.id);
-            _id = doc.id;
-            //console.log(_id);
-           // console.log(typeof (doc.id), " => ", doc.data());
-        });
-        
-        setReceiverId(yeniId);
-        getUsers(yeniId);
-        setLoading(false);
-    }*/
+    const [reference, setReference] = useState(null);
 
     const getUsers = async (_id) => {
-        try {
-            const docRef = doc(db, "chats", _id);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                //console.log("+" + docSnap.data().receiver);
-                setUsers(docSnap.data().receiver);
-                setMessages(docSnap.data()?.messages ?? []);
-                setLoading(false);
-            } else {
-                console.log("Document does not exist")
-            }
-        } catch (error) {
-            console.log(error)
-        }
+        const unsub = onSnapshot(doc(db, "chats", _id), (doc) => {
+            setUsers(doc.data().receiver);
+            setMessages(doc.data()?.messages ?? []);
+            setLoading(false);
+            if (reference !== null)
+                reference.scrollToEnd({ animated: true });
+        });
+
     };
-
-    /*   function getUserPhoto(userMail) {
-          auth.getUserByEmail(userMail)
-               .then((userRecord) => {
-                   // See the UserRecord reference doc for the contents of userRecord.
-                   console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
-               })
-           if (user !== null) {
-               console.log(user);
-               user.providerData.forEach((profile) => {
-                   console.log("Sign-in provider: " + profile.providerId);
-                   console.log("  Provider-specific UID: " + profile.uid);
-                   console.log("  Name: " + profile.displayName);
-                   console.log("  Email: " + profile.email);
-                   console.log("  Photo URL: " + profile.photoURL);
-                   setUserName(profile.displayName);
-                   setPicture(profile.photoURL);
-               });
-           }
-           else
-               console.log("kullanici yok");
-       }*/
-
     useEffect(() => {
         setReceiverId(newId);
         setTimeout(() => {
@@ -120,6 +74,8 @@ const ChatArea = ({ navigation, route }) => {
 
     useEffect(() => {
         getUsers(newId);
+        if (reference !== null)
+            reference.scrollToEnd({ animated: true });
     }, [send])
 
     const onSend = (m) => {
@@ -150,6 +106,10 @@ const ChatArea = ({ navigation, route }) => {
                 {
 
                     <FlatList
+                        ref={(ref) => {
+                            if (ref === null)
+                                setReference(ref);
+                        }}
                         data={messages}
                         renderItem={({ item }) => {
                             if (item.senderMail === auth.currentUser.email) {

@@ -6,7 +6,8 @@ import ContactLines from '../../Components/ContactLines';
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import { getAuth, initializeAuth } from "firebase/auth";
-import { getFirestore, getDocs, setDoc, QuerySnapshot, collection, addDoc, query, where } from 'firebase/firestore/lite';
+//import { getFirestore, getDocs, setDoc, QuerySnapshot, collection , query, where } from 'firebase/firestore/lite';
+import { onSnapshot,getFirestore, getDocs, setDoc, QuerySnapshot, collection , query, where } from "firebase/firestore";
 
 import { useSelector } from 'react-redux';
 import Icons from '@expo/vector-icons/Ionicons';
@@ -66,7 +67,20 @@ const MessagesList = ({ navigation }) => {
             });
         }
         getUsers();
-       // console.log("sa");
+
+
+        
+        /*
+        CALISAN 
+        const q = query(collection(db, "chats"), where("users", "array-contains", auth.currentUser.email));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const cities = [];
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data().messages[0]);
+            });
+        });*/
+
+        // console.log("sa");
     }, [isFocused]);
 
     const renderChatList = ({ item }) =>
