@@ -44,6 +44,7 @@ const AccountPage = () => {
         updateProfile(user, {
             displayName: changeUserName,
         }).then(() => {
+            setUserName(changeUserName);
             Alert.alert("Username updated!");
         }).catch((error) => {
             Alert.alert("An error occurred!");
@@ -115,7 +116,7 @@ const AccountPage = () => {
                                     Password
                                 </Text>
                                 <Text style={{ color: theme.color, fontSize: 16 }}>
-                                    
+
                                 </Text>
                             </View>
                             :

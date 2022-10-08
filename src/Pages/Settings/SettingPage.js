@@ -1,6 +1,6 @@
 import { View, Image, StyleSheet, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
-
+import { useIsFocused } from '@react-navigation/native'
 import SettingButton from '../../Components/SettingButton';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +11,7 @@ import darkTheme from '../../Themes/dark';
 import { firebaseConfig } from "../../FirebaseConfig/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signOut, updateProfile } from "firebase/auth";
-import { getStorage, ref, uploadBytes, storageRef, storage, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from '@expo/vector-icons/MaterialIcons';
@@ -26,6 +26,7 @@ const SettingPage = ({ navigation }) => {
     const [userName, setUserName] = useState('');
     const [email, setMail] = useState('');
     const [profilePicture, setProfilePicture] = useState('');
+    const isFocused = useIsFocused();
 
     function changeTheme() {
         theme === lightTheme ? dispatch(setDark()) : dispatch(setLight());
@@ -124,7 +125,7 @@ const SettingPage = ({ navigation }) => {
 
             });
         }
-    }, []);
+    }, [isFocused]);
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>

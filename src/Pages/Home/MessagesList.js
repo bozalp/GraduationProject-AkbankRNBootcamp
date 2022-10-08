@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Alert, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
+import { useIsFocused } from '@react-navigation/native'
 
 import ContactLines from '../../Components/ContactLines';
 import { initializeApp } from "firebase/app";
@@ -22,6 +23,7 @@ const MessagesList = ({ navigation }) => {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const isFocused = useIsFocused();
 
     function goToAddContact() {
         navigation.navigate("AddContact");
@@ -49,10 +51,10 @@ const MessagesList = ({ navigation }) => {
             idArray.push({
                 newId: idList[i],
                 data: receiverList[i],
-            });    
+            });
         }
         setId(idArray);
-        console.log(IdS);
+        //console.log(IdS);
         setLoading(false);
     }
 
@@ -64,10 +66,11 @@ const MessagesList = ({ navigation }) => {
             });
         }
         getUsers();
-    }, []);
+       // console.log("sa");
+    }, [isFocused]);
 
     const renderChatList = ({ item }) =>
-        <ContactLines navigation={navigation} userName={item.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
+        <ContactLines navigation={navigation} userName={item.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="" messageTime=""
             onPress={() => navigation.navigate("ChatArea", {
                 newId: item.newId,
                 newName: item.data.users.filter(user => user !== auth.currentUser.email).toString()
@@ -81,20 +84,20 @@ const MessagesList = ({ navigation }) => {
             </Text>
             {
 
-               /* IdS.map((m) =>
-                        <ContactLines navigation={navigation} userName={m.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
-                            onPress={() => navigation.navigate("ChatArea", {
-                                yeniId: m.yeniId,
-                                yeniName: m.data.users.filter(user => user !== auth.currentUser.email).toString()
-                            })}
-                        />
-                )
-                 */
+                /* IdS.map((m) =>
+                         <ContactLines navigation={navigation} userName={m.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
+                             onPress={() => navigation.navigate("ChatArea", {
+                                 yeniId: m.yeniId,
+                                 yeniName: m.data.users.filter(user => user !== auth.currentUser.email).toString()
+                             })}
+                         />
+                 )
+                  */
                 isLoading ? <ActivityIndicator size={"large"} />
-                :
-                      <FlatList
-                            data={IdS}
-                            renderItem={renderChatList} />
+                    :
+                    <FlatList
+                        data={IdS}
+                        renderItem={renderChatList} />
             }
             <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.contact_button]} onPress={goToAddContact}>
                 <Icons name='pencil' size={28} color={theme.backgroundColor} />
