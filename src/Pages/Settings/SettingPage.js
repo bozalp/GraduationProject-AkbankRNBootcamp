@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, Text } from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 
 import SettingButton from '../../Components/SettingButton';
@@ -14,6 +14,7 @@ import firebase from "firebase/app";
 import { getAuth, signOut } from "firebase/auth";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from '@expo/vector-icons/MaterialIcons';
 
 const SettingPage = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
@@ -61,24 +62,29 @@ const SettingPage = ({ navigation }) => {
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
             <View style={styles.profile_info_area}>
-                {
-                    profilePicture ?
-                        <Image style={{ width: 64, height: 64, borderRadius: 10, marginRight: 10 }} source={{ uri: profilePicture }} />
-                        :
-                        <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
-                            <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
-                                {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
-                            </Text>
-                        </View>
-                }
                 <View>
-                    <Text style={[styles.user_text, { color: theme.color }]}>
-                        {userName}
-                    </Text>
-                    <Text style={{ color: theme.color }}>
-                        {email}
-                    </Text>
+                    {
+                        profilePicture ?
+                            <Image style={styles.profile_image} source={{ uri: profilePicture }} />
+                            :
+                            <View style={[styles.empty_image, { backgroundColor: theme.purpleColor }]}>
+                                <Text style={[styles.empty_image_text, { color: theme.backgroundColor }]}>
+                                    {userName.split(' ').reduce((prev, current) => `${prev}${current[0]}`, "")}
+                                </Text>
+                            </View>
+
+                    }
+                    <TouchableOpacity style={[{ backgroundColor: theme.purpleColor }, styles.camera_button]} onPress={null} activeOpacity={0.7}>
+                        <Icons name='photo-camera' size={28} color={theme.backgroundColor} />
+                    </TouchableOpacity>
                 </View>
+                <Text style={[styles.user_text, { color: theme.color }]}>
+                    {userName}
+                </Text>
+                <Text style={{ color: theme.color }}>
+                    {email}
+                </Text>
+
             </View>
 
             <SettingButton title={"Theme: " + theme.title} iconName={theme === lightTheme ? 'brightness-6' : 'bedtime'} onPress={() => changeTheme()} />
@@ -100,17 +106,26 @@ const styles = StyleSheet.create(
         profile_info_area:
         {
             width: '100%',
-            flexDirection: 'row',
-            height: 72,
+            padding: 10,
+            alignItems: 'center'
+        },
+        profile_image:
+        {
+            width: 128,
+            height: 128,
+            borderRadius: 10,
+            marginRight: 10,
+            marginBottom: 10,
         },
         empty_image:
         {
-            width: 64,
-            height: 64,
+            width: 128,
+            height: 128,
             borderRadius: 10,
             marginRight: 10,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            marginBottom: 10,
         },
         empty_image_text:
         {
@@ -122,9 +137,16 @@ const styles = StyleSheet.create(
             fontWeight: '700',
             fontSize: 16
         },
-        mail_text:
+        camera_button:
         {
-
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
         }
     }
 );
