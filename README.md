@@ -9,7 +9,7 @@ This project designed with Expo.<br><br>
 -AsyncStorage<br>
 -Redux-Toolkit<br>
 -Firebase<br>
--Image Picker<br><br><br>
+-Image Picker<br>
 
 This is a basic chat app. You can add new contacts, update your profile information and, of course, talk to your friends. Firebase used for real-time database.
 Includes dark and light theme.
