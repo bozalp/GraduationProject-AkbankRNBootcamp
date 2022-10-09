@@ -8,8 +8,8 @@ const TextBox = ({ title, value, onChangeText, secureText }) => {
         <TextInput
             style={{
                 backgroundColor: theme.lineBackground, color: theme.color,
-                borderRadius: 5, marginBottom: 10, borderColor: theme.purpleColor, borderWidth: 1, height:50,
-                padding:5
+                borderRadius: 5, marginBottom: 10, borderColor: theme.purpleColor, borderWidth: 1, height: 50,
+                padding: 5
             }}
             onChangeText={onChangeText}
             value={value}

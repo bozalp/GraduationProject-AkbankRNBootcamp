@@ -96,11 +96,9 @@ const SettingPage = ({ navigation }) => {
             const fileRef = ref(storage, uuid.v4());
             await uploadBytes(fileRef, blob, metadata)
             blob.close();
-            // return await getDownloadURL(fileRef);
             getDownloadURL(fileRef).then((downloadURL) => {
                 console.log('File available at', downloadURL);
                 updateProfilePicture(downloadURL);
-                // setDownloadUrl(downloadURL);
             });
         }
         catch (error) {
@@ -114,10 +112,6 @@ const SettingPage = ({ navigation }) => {
         const user = auth.currentUser;
         if (user !== null) {
             user.providerData.forEach((profile) => {
-                //console.log("Sign-in provider: " + profile.providerId);
-                //console.log("  Provider-specific UID: " + profile.uid);
-                //console.log("  Name: " + profile.displayName);
-                //console.log("  Email: " + profile.email);
                 console.log("  Photo URL: " + profile.photoURL);
                 setUserName(profile.displayName);
                 setMail(profile.email);

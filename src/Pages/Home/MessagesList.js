@@ -7,7 +7,7 @@ import { initializeApp } from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import { getAuth, initializeAuth } from "firebase/auth";
 //import { getFirestore, getDocs, setDoc, QuerySnapshot, collection , query, where } from 'firebase/firestore/lite';
-import { onSnapshot,getFirestore, getDocs, setDoc, QuerySnapshot, collection , query, where } from "firebase/firestore";
+import { onSnapshot, getFirestore, getDocs, setDoc, QuerySnapshot, collection, query, where } from "firebase/firestore";
 
 import { useSelector } from 'react-redux';
 import Icons from '@expo/vector-icons/Ionicons';
@@ -41,10 +41,8 @@ const MessagesList = ({ navigation }) => {
         const querySnapshot = await getDocs(queryChats);
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            //setChatList(x);
             receiverList.push(data);
             idList.push(doc.id);
-            //console.log(doc.id, " => ", doc.data());
         });
         setChatList(receiverList);
         let idArray = [];
@@ -55,7 +53,6 @@ const MessagesList = ({ navigation }) => {
             });
         }
         setId(idArray);
-        //console.log(IdS);
         setLoading(false);
     }
 
@@ -69,7 +66,7 @@ const MessagesList = ({ navigation }) => {
         getUsers();
 
 
-        
+
         /*
         CALISAN 
         const q = query(collection(db, "chats"), where("users", "array-contains", auth.currentUser.email));
@@ -93,20 +90,15 @@ const MessagesList = ({ navigation }) => {
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-            <Text>
-                Welcome X
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={{ color: theme.color, paddingRight: 5 }}>
+                    Welcome
+                </Text>
+                <Text style={{ color: theme.color, fontWeight: '700', paddingBottom: 10 }}>
+                    {auth.currentUser.displayName}
+                </Text>
+            </View>
             {
-
-                /* IdS.map((m) =>
-                         <ContactLines navigation={navigation} userName={m.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="Nabıyon bea??" messageTime="12:00"
-                             onPress={() => navigation.navigate("ChatArea", {
-                                 yeniId: m.yeniId,
-                                 yeniName: m.data.users.filter(user => user !== auth.currentUser.email).toString()
-                             })}
-                         />
-                 )
-                  */
                 isLoading ? <ActivityIndicator size={"large"} />
                     :
                     <FlatList

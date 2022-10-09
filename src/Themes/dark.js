@@ -4,6 +4,6 @@ export default {
     borderColor:'#2c2c44',
     color: 'white',
     lineBackground:'#25253e',
-    grayText:'#aaa',
+    grayText:'#666',
     purpleColor:'#978cfa'
 }

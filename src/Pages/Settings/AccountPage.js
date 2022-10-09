@@ -53,7 +53,6 @@ const AccountPage = () => {
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-
             <View>
                 <View style={[{ borderColor: theme.borderColor, backgroundColor: theme.lineBackground }, styles.info_lines]}>
                     <View style={{ padding: 10 }}>
@@ -177,10 +176,6 @@ const styles = StyleSheet.create(
             borderRadius: 10,
             marginBottom: 10,
         },
-        icon:
-        {
-
-        }
     }
 );
 

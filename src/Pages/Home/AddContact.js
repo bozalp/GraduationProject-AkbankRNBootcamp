@@ -24,8 +24,6 @@ const AddContact = () => {
             users: [
                 sender, receiver
             ]
-           // sender: sender,
-           // receiver: receiver
         });
         setReceiver("");
         console.log("Document written with ID: ", docRef.id);

@@ -11,9 +11,7 @@ const Stack = createNativeStackNavigator();
 
 const Home = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
-    function goToSettings() {
-        Alert.alert("sa");
-    }
+    
     return (
         <Stack.Navigator screenOptions={{
             headerStyle: { backgroundColor: theme.backgroundColor, },

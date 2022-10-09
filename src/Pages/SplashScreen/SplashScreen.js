@@ -8,6 +8,8 @@ import { initializeApp } from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import Icons from '@expo/vector-icons/MaterialIcons';
+
 const SplashScreen = ({ navigation }) => {
     const theme = useSelector((state) => state.theme.theme);
     const dispatch = useDispatch();
@@ -20,7 +22,7 @@ const SplashScreen = ({ navigation }) => {
         value === 'light' || value === null ? dispatch(setDark()) : dispatch(setLight());
     };
 
-    //kayitli kullanici verisi varsa giris yapiyorum. yoksa giris ekranina gidiyorum
+    //I am logging in if there is registered user data. Otherwise i go to login screen
     const getUserData = async () => {
         const email = await AsyncStorage.getItem('email');
         const password = await AsyncStorage.getItem('password');
@@ -49,7 +51,8 @@ const SplashScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text onPress={goToHomePage}>Best Chat App</Text>
+            <Icons name='chat' size={64} color={"black"} style={{ paddingBottom: 10}} onPress={goToHomePage}/>
+            <Text>Best Chat App</Text>
             <Text style={{ paddingLeft: 120, fontSize: 10 }}>
                 by bozalp
             </Text>

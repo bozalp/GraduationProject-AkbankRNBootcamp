@@ -7,10 +7,9 @@ const SettingButton = ({ title, iconName, onPress }) => {
 
     return (
         <TouchableOpacity onPress={onPress}
-            style={[{ backgroundColor: theme.lineBackground, borderColor: theme.borderColor, }, styles.button]}>          
-                <Icons name={iconName} size={32} color={theme.color} style={styles.icon} />
-                <Text style={{ color: theme.color, width:'100%' }}>{title}</Text>
-           
+            style={[{ backgroundColor: theme.lineBackground, borderColor: theme.borderColor, }, styles.button]}>
+            <Icons name={iconName} size={32} color={theme.color} style={styles.icon} />
+            <Text style={{ color: theme.color, width: '100%' }}>{title}</Text>
         </TouchableOpacity >
     )
 }
@@ -23,13 +22,13 @@ const styles = StyleSheet.create(
             height: 64,
             width: '100%',
             justifyContent: 'space-between',
-            alignItems:'center',
+            alignItems: 'center',
             flexDirection: 'row',
             marginBottom: 10,
         },
         icon:
         {
-            padding:10,
+            padding: 10,
         }
     }
 )

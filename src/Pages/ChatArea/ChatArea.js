@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator, ScrollView, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
-
-import { GiftedChat } from 'react-native-gifted-chat';
 
 import Icons from '@expo/vector-icons/MaterialIcons';
 
@@ -11,7 +9,6 @@ import firebase from "firebase/app";
 import { firebaseConfig } from '../../FirebaseConfig/firebaseConfig';
 import { getAuth, initializeAuth, } from "firebase/auth";
 import { getFirestore, getDocs, setDoc, arrayUnion, onSnapshot, QuerySnapshot, collection, addDoc, query, where, doc, getDoc, set } from 'firebase/firestore';
-import { useRoute } from '@react-navigation/native';
 
 const ChatArea = ({ navigation, route }) => {
     const theme = useSelector((state) => state.theme.theme);
@@ -29,14 +26,14 @@ const ChatArea = ({ navigation, route }) => {
     const [username, setUserName] = useState("");
     const [send, setSend] = useState(false);
     const [reference, setReference] = useState(null);
+    const scrollViewRef = useRef();
 
     const getUsers = async (_id) => {
         const unsub = onSnapshot(doc(db, "chats", _id), (doc) => {
             setUsers(doc.data().receiver);
             setMessages(doc.data()?.messages ?? []);
             setLoading(false);
-            if (reference !== null)
-                reference.scrollToEnd({ animated: true });
+            scrollToEnd();
         });
 
     };
@@ -74,15 +71,13 @@ const ChatArea = ({ navigation, route }) => {
 
     useEffect(() => {
         getUsers(newId);
-        if (reference !== null)
-            reference.scrollToEnd({ animated: true });
+        scrollToEnd();
     }, [send])
 
+    function scrollToEnd() {
+        scrollViewRef.current.scrollToEnd({ animated: true })
+    }
     const onSend = (m) => {
-        /*const docRef = addDoc(collection(db, "chats", receiverId), {
-            messages: message
-        });*/
-
         //textbox bos degilse verileri messages kismina array olarak gonderiyorum
         if (chatMessage !== "") {
             const cityRef = doc(db, 'chats', newId);
@@ -91,7 +86,6 @@ const ChatArea = ({ navigation, route }) => {
             setDoc(cityRef,
                 {
                     messages: arrayUnion({ senderMail: auth.currentUser.email, text: m, date: date, time: messageTime })
-                    //messages: [{ text: m }]
                 }
                 , { merge: true });
             setChatMessage("");
@@ -101,20 +95,20 @@ const ChatArea = ({ navigation, route }) => {
 
     return (
         <View style={[{ backgroundColor: theme.backgroundColor }, styles.container]}>
-
             <View style={styles.inner}>
-                {
-
-                    <FlatList
-                        ref={(ref) => {
-                            if (ref === null)
-                                setReference(ref);
-                        }}
-                        data={messages}
-                        renderItem={({ item }) => {
+                <ScrollView
+                    ref={scrollViewRef}
+                    onContentSizeChange={() =>
+                        scrollViewRef.current.scrollToEnd({ animated: true })
+                    }
+                    showsVerticalScrollIndicator={false}
+                >
+                    {
+                        messages.map((item) => {
+                            //I'm showing the sender's messages on the right
                             if (item.senderMail === auth.currentUser.email) {
                                 return (
-                                    <View style={{ alignItems: 'flex-end' }}>
+                                    <View style={{ alignItems: 'flex-end' }} key={item.date}>
                                         <View style={[{ borderColor: theme.borderColor, backgroundColor: theme.purpleColor }, styles.messagebox_sender]}>
                                             <Text style={{ color: theme.backgroundColor, }}>
                                                 {item.text}
@@ -126,28 +120,31 @@ const ChatArea = ({ navigation, route }) => {
                                     </View>
                                 )
                             }
+                            //I'm showing the receiver's messages on the left
                             else {
                                 return (
-                                    <View style={[{ borderColor: theme.borderColor, backgroundColor: theme.lineBackground }, styles.messagebox_receiver]}>
-                                        <Text style={{ color: theme.color, }}>
-                                            {item.text}
-                                        </Text>
-                                        <Text style={[styles.time_text, { color: theme.grayText }]}>
-                                            {item.time}
-                                        </Text>
+
+                                    <View style={{ alignItems: 'flex-start' }} key={item.date}>
+                                        <View style={[{ borderColor: theme.borderColor, backgroundColor: theme.lineBackground }, styles.messagebox_receiver]}>
+                                            <Text style={{ color: theme.color, }}>
+                                                {item.text}
+                                            </Text>
+                                            <Text style={[styles.time_text, { color: theme.grayText }]}>
+                                                {item.time}
+                                            </Text>
+                                        </View>
                                     </View>
                                 )
                             }
                         }
-                        }
-                    />
-                }
+                        )
+                    }
+                </ScrollView>
             </View>
-
-
             <View style={[{ backgroundColor: theme.lineBackground, borderColor: theme.purpleColor, }, styles.textbox_area]}>
 
                 <TextInput
+                    onFocus={scrollToEnd}
                     style={[{ backgroundColor: theme.lineBackground, color: theme.color, borderColor: theme.purpleColor, }, styles.textbox]}
                     onChangeText={setChatMessage}
                     value={chatMessage}
@@ -173,31 +170,31 @@ const styles = StyleSheet.create({
     inner:
     {
         flex: 1,
-        // flexDirection: 'column-reverse',
         padding: 10,
         marginBottom: 70
     },
     messagebox_sender:
     {
-        width: '60%',
-        padding: 5,
+        padding: 10,
         marginBottom: 10,
         borderRadius: 10,
         borderWidth: 1,
-        alignItems: 'flex-end'
+        alignItems: 'flex-start',
+        flexDirection: 'row',
     },
     messagebox_receiver:
     {
-        width: '60%',
-        padding: 5,
+        padding: 10,
         marginBottom: 10,
         borderRadius: 10,
         borderWidth: 1,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        flexDirection: 'row',
     },
     time_text:
     {
         fontSize: 12,
+        paddingLeft: 20,
         paddingTop: 10,
     },
     textbox:
