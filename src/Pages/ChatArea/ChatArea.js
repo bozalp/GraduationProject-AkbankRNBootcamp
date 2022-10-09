@@ -33,9 +33,9 @@ const ChatArea = ({ navigation, route }) => {
             setUsers(doc.data().receiver);
             setMessages(doc.data()?.messages ?? []);
             setLoading(false);
-            scrollToEnd();
-        });
 
+        });
+        scrollToEnd();
     };
     useEffect(() => {
         setReceiverId(newId);
@@ -75,6 +75,7 @@ const ChatArea = ({ navigation, route }) => {
     }, [send])
 
     function scrollToEnd() {
+        //console.log(typeof(scrollViewRef.current));
         scrollViewRef.current.scrollToEnd({ animated: true })
     }
     const onSend = (m) => {

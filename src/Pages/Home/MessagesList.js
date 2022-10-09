@@ -18,6 +18,7 @@ const MessagesList = ({ navigation }) => {
     const [chatList, setChatList] = useState([{
         newId: "",
         data: [],
+        lastMessage: ""
     }]);
     const [IdS, setId] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -37,24 +38,30 @@ const MessagesList = ({ navigation }) => {
     const getUsers = async () => {
         const receiverList = [];
         const idList = [];
-        let x = 0;
-        const querySnapshot = await getDocs(queryChats);
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            receiverList.push(data);
-            idList.push(doc.id);
-        });
-        setChatList(receiverList);
-        let idArray = [];
-        for (let i = 0; i < idList.length; i++) {
-            idArray.push({
-                newId: idList[i],
-                data: receiverList[i],
+        const q = query(collection(db, "chats"), where("users", "array-contains", auth.currentUser.email));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                receiverList.push(doc.data());
+                idList.push(doc.id);
+                // console.log(doc.data().messages[doc.data().messages.length - 1]);
             });
-        }
-        setId(idArray);
-        setLoading(false);
+        });
+        setTimeout(() => {
+            setChatList(receiverList);
+            let idArray = [];
+            for (let i = 0; i < idList.length; i++) {
+                idArray.push({
+                    newId: idList[i],
+                    data: receiverList[i],
+                    // lastMessage: receiverList[i].messages[receiverList[i].messages.length - 1] ?? ""
+                });
+            }
+            setId(idArray);
+            setLoading(false);
+        }, 500);
     }
+      
+
 
     useEffect(() => {
         const user = auth.currentUser;
@@ -64,24 +71,12 @@ const MessagesList = ({ navigation }) => {
             });
         }
         getUsers();
-
-
-
-        /*
-        CALISAN 
-        const q = query(collection(db, "chats"), where("users", "array-contains", auth.currentUser.email));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const cities = [];
-            querySnapshot.forEach((doc) => {
-                console.log(doc.data().messages[0]);
-            });
-        });*/
-
-        // console.log("sa");
     }, [isFocused]);
 
     const renderChatList = ({ item }) =>
-        <ContactLines navigation={navigation} userName={item.data.users.filter(user => user !== auth.currentUser.email).toString()} lastMessage="" messageTime=""
+        <ContactLines navigation={navigation} userName={item.data.users.filter(user => user !== auth.currentUser.email).toString()}
+            lastMessage={item.data.messages[(item.data.messages.length - 1)]?.text ?? ""}
+            messageTime={item.data.messages[(item.data.messages.length - 1)]?.time ?? ""}
             onPress={() => navigation.navigate("ChatArea", {
                 newId: item.newId,
                 newName: item.data.users.filter(user => user !== auth.currentUser.email).toString()
